@@ -4,6 +4,8 @@ This assignment has a Python component and a C++ component.
 Each assignment combines concepts taught throughout the course.
 This assignment is worth 20% of your final grade.
 
+**Like the Problem Sets, your commits should show incremental development of your code.**
+
 ## C++ Final Project
 
 For this project, you will write a fully-functioning matrix class in C++. This class will support
