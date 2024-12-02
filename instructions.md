@@ -92,7 +92,7 @@ The figure below shows the beneze substructure matched in the aspirin molecule.
 Substructure searches in molecules represented as graphs can be done by checking a molecular graph for a subgraph.
 Another faster but less exact method is to use molecular fingerprints.
 
-The concept of molecular fingerprints was covered in [Lab 7](https://classroom.github.com/a/-B1u0OMk).
+The concept of molecular fingerprints was covered in [Lab 5](https://github.com/chem-274-A-master/lab-5).
 Briefly, a molecular fingerprint is a vector of bits that represent the presence or absence of particular features in a molecule.
 Although there are many different types of molecular fingerprints, graph representation of molecules form the foundation of most algorithms.
 For this assignment, you will implement a molecular fingerprint based on graph traversal.
@@ -108,26 +108,31 @@ Note that because of this, the fingerprint of substructure search is less exact 
 
 ### Required Features
 
-For this final project, detailed specifications are not provided.
-You will need to use what you have learned about classes in the Python programming language in order to complete the task.
+For this final project, detailed specifications and a rubric are not provided.
+You will need to use what you have learned about classes in the Python programming language.
+For this final assignment, you should create a full project. 
+This includes not only code, but a user interface (command line), documentation, and testing.
 **Consider how you can use concepts like inheritance, operator overloading, and special Python methods in your project.**
 
 Create a `Molecule` class that can be used to represent a molecule.
 For this project, you may use functions, methods, and classes that are part of the  [NetworkX](https://networkx.org/) library.
 The functionality that you implement in this Project will be similar to the functionality that is provided by the [RDKit](https://www.rdkit.org/) library. If you were completing a project with molecules, it would be advisable to use this library instead of implementing your own functionality. However, for this Project, you *may not* use RDKit.
 
+The following are the requirements for your project. **When questions as "Why?" your answers should be grounded in the principles of Chem 274A (principles of object-oriented programming, data types, single responsibility principles, cheminformatics or molecular modeling concepts, etc.).**
+
 * The `Molecule` class should use a graph representation of the molecule. For this, consider how you may use composition or inheritance to create your class. 
 Be able to explain the choice you made in your project documentation.
-* Your `Molecule` class should be able to be constructed either from a list of atoms and bonds or from an SDF file.
-* Your `Molecule` class should have a method or attribute that represents the molecular fingerprint of the molecule.
+* Your `Molecule` class should have two methods that can be used for construction. It should be able to be constructed either from a list of atoms and bonds or from an SDF file ("or" here is referred to the user choice, the class should contain both methods of construction). For this requirement, consider ways we learned to write constructors in Python.
+* Your `Molecule` class should have a method or attribute that represents the molecular fingerprint of the molecule (more information below). When designing your fingerprint, consider the following - how will you handle atoms and bonds in your fingerprint? For example, how can you make sure a hydroxyl (COH) group is recognized differently than a carbonyl (C=O) group? You should explain each choice you make for your fingerprint in your project documentation.
 * Your `Molecule` class should be comparable to other `Molecule` objects through the equality operator (`==`). You may or may not choose to use a fingerprint for this task. You must explain your choice for the equality operator in your documentation.
+* Your `Molecule` class should have a method to visualize the molecule - use CPK coloring for atoms, like Problem Set 3.
 * Your `Molecule` class should have a representation in Jupyter notebooks. 
 Such that if a `Molecule` instance is the last thing in a Jupyter notebook cell, you see an image of the molecule. You can accomplish this by writing a `_ipython_display_` method for your class.
-* A user should be able to import your `Molecule` object and use it in a Jupyter notebook or be able to perform a substructure screen **from the command line** (search for molecule within a set of molecules). For your command line interface you should consider using `sys.argv` or `argparse`. Explain your choice in  your project documentation.
+* A user should be able to import your `Molecule` object and use it in a script or notebook.
+* A user should be able to perform a substructure screen using a function or method and **from the command line**. For your command line interface you should consider using `sys.argv` or `argparse`. Explain your choice in  your project documentation.
 * Your project should include testing of your code using pytest. You should have at least one test for each method in your `Molecule` class to ensure that your code runs. More extensive testing is encouraged.
-* Your project should include a sample Jupyter notebook demonstrating your substructure search.
 * Your project should include a Makefile that can be used to run your tests and build an environment.
-* In your README, fully explain your code and repository. Be sure to include information on your design approach for your `Molecule` object. What principles from Chem 274A did you apply? You should discuss at least one other approach for creating the `Molecule` class that you did not use, and explain why you chose the approach that you did. 
+* In your README, fully explain your code and repository. Be sure to include information on your design approach for your `Molecule` object. What principles from Chem 274A did you apply? You should discuss at least one other approach for creating the `Molecule` class that you did not use, and explain why you chose the approach that you did. What method did you use for substructure search and why? What would be an alternative method? What are the advantages and disadvantages of each method?
 
 For your fingerprint, you will have to choose parameters such as number of bits and path length.
 As a reference, RDKit uses the following defaults for fingerprints:
@@ -137,7 +142,10 @@ As a reference, RDKit uses the following defaults for fingerprints:
 * fingerprint size: 2048 bits
 * number of bits set per hash: 2
 
-### Fingerprint Path Example
+### How to Construct a Molecular Fingerprint
+
+To construct a molecular fingerprint, you first have to construct paths from the molecule graph.
+Consider the example below.
 
 The following example is taken from [the Daylight website](http://www.daylight.com/dayhtml/doc/theory/theory.finger.html).
 
@@ -150,7 +158,7 @@ The molecule OC=CN would generate the following patterns:
 
 The list of patterns produced is exhaustive: Every pattern in the molecule, up to the pathlength limit, is generated. For all practical purposes, the number of patterns one might encounter by this exhaustive search is infinite, but the number produced for any particular molecule can be easily handled by a computer.
 
-Each pattern serves as a seed to a pseudo-random number generator (it is "hashed"), the output of which is a set of bits (typically 4 or 5 bits per pattern); the set of bits thus produced is added (with a logical OR) to the fingerprint. 
+Each pattern serves as a seed to a pseudo-random number generator (it is "hashed"), the output of which is a set of bits (typically 4 or 5 bits per pattern); the set of bits thus produced is then added to the fingerprint. 
 
 ### Pseudocode for Molecular Fingerprint
 
@@ -185,4 +193,4 @@ return fingerprint
 The following files are provided for this assignment: 
 
 * `provided.py` - contains improved `parse_sdf` function from Problem Set 3.
-* `sdf.zip` - contains SDF files for molecules that you can use to test your code. 
+* `sdf.zip` - contains SDF files for molecules. You can try out your `Molecule` class on these files.
