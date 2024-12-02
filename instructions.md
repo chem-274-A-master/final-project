@@ -163,7 +163,7 @@ Each pattern serves as a seed to a pseudo-random number generator (it is "hashed
 
 ### Pseudocode for Molecular Fingerprint
 
-Pseudocode, taken from ["Handbook of Chemoinformatics Algorithms"](https://ebookcentral-proquest-com.libproxy.berkeley.edu/lib/berkeley-ebooks/detail.action?pq-origsite=primo&docID=555698), for generating a molecular fingerprint is given below. 
+Pseudocode, taken from ["Handbook of Chemoinformatics Algorithms"](https://libproxy.berkeley.edu/login?qurl=https%3A%2F%2Fdoi.org%2F10.1201%2F9781420082999) (this is a Berkeley library link to the full texbook), for generating a molecular fingerprint is given below. 
 Remember that you can utilized functionality in `NetworkX` to implement
 the fingerprint. 
 
