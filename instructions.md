@@ -8,70 +8,189 @@ This assignment is worth 20% of your final grade.
 
 ## C++ Final Project
 
-For this project, you will write a fully-functioning matrix class in C++. This class will support
-multiple ways of instantiating and manipulating matrices, as well as some of the 
-more the common matrix operations.
+### General Requirements
 
-We are giving you only a general specification and some individual function requirements,
-leaving the implementation details up to you.  This is common in software development - we often have to make
-decisions about an implementation where there is no single 'correct' answer, but
-multiple ways of doing things. Understanding the benefits and drawbacks of various designs
-is a large part of software engineering.
+These requirements apply to both C++ parts
 
-### Required features
+* Code must be split into the appropriate header and source files
+* A separate `main.cpp` file should contains tests of your functionality
+* `const` correctness is required!
+* Code should compile without warning on the default settings
 
-1. The matrix class should be templated, so that it works with any
-   type. Particularly, it should work with `double`, `float`,
-   and `int`, along with the `std::complex` variations of those types.
+### Compenstated Summation
 
-2. The matrix should be constructable three different ways:
-    1. With no arguments (`Matrix m;`)
-    2. With a desired number of rows and columns (`Matrix m(3,2);`)
-    3. Via copying an existing matrix
+The finite precision of most programming languages can result in loss of precision in mathematical expressions and rounding error
+when accumulating large numbers of values, or in particular, numbers of very different magnitudes.
 
-3. Accessing the elements of the matrix should be the parentheses operator. Ie, you should be able to
-   access element 2,3 via `mat(2,3)`. The element should be modifiable via this method (`mat(2,3) = 10.0`).
-   
-4. The matrix should have the ability to be resized. When using this function,
-   the user should assume that any existing data is either destroyed or
-   invalid after resizing. 
+For example, think of the following expression:
 
-5. The matrix class should support the following operations, either via member functions or operators:
-   1. Matrix addition (overload the `+` operator) 
-   2. Matrix multiplication (overload the `*` operator)
-   3. Matrix element-wise multiplication
-   4. Assignment of one matrix to another via the `=` operator
-   5. Filling the matrix with a particular value
-      1. via a `.fill()` member function
-      2. via assignment of a scalar value (`m = 5;`)
-   6. Comparison of two matrices (overload `operator==`. **HINT:** look up documentaton for `std::equal`)
-   7. Printing of the matrix to a `std::ostream` object.
-      1. Also, write a free function so that `std::cout << m;` works
-   8. A function that returns the transpose of the matrix
-   9. A function that returns the complex conjugate of the matrix
-   10. A function that returns the conjugate transpose of the matrix
-   11. Functions that perform the transpose, complex conjugate, and conjugate transpose in place (ie, they modify the matrix rather than return a new one)
-   12. **For extra credit:** Computing the eigenvalues and eigenvectors of a matrix (**HINT:** - use blas/lapack internally)
+$$
+10000 + 8.0\times 10^{-13} + 8.0\times 10^{-13} + 8.0\times 10^{-13} + 8.0\times 10^{-13} + 8.0\times 10^{-13}
+$$
 
-The conjugate transpose is very common in quantum chemistry.
-For details on what it is, see [Wikipedia](https://en.wikipedia.org/wiki/Conjugate_transpose).
+You would expect result to be $10000.000000000004$. However, if you were to try this in a python interpreter
+                           
 
-**As a general hint, you should always be thinking about how you can re-use
-existing functions to implement new features.** For example, a function that
-returns a transpose and the function that transposes in place are very
-related. Can one use the other?
+```python
+>>> 10000 + 8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13
+10000.0
+```
 
-Overall, the class should be `const` correct and free of memory leaks. You
-should throw exceptions when operations aren't valid (ie, matrix multiplication
-of incompatible sizes).
+Morever, if you group the smaller exponents so that that sum is done first (or reorder your expression),
+you can get the correct answer
 
-Since this is a templated class, it should exist completely in a header file.
+```python
+>>> 10000 + (8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13)
+10000.000000000004
+>>> 8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13 + 8.0e-13 + 10000
+10000.000000000004
+```
 
-Finally, create a `.cpp` source file to demonstrate your matrix class and
-its capabilities.
+The reson for the weird behavior is that the result is rounded after each addition, resulting
+in roundoff error. There is not enough precision in a double-precision floating point to store
+the result of `10000 + 8.0e-13`, although there is enough to store the result of `10000 + 4.0e-12`.
 
-Your project should have README documenting your class, and a Makefile that
-compiles your example/test `.cpp` file.
+A lot of times programmers ignore this, and for the most part it makes little difference. When summing large
+arrays of numbers with varying magnitudes, though it can matter. It can also show up when subtracting
+nearly-equal numbers
+
+```python
+>>> 1e9 + (1.2345670 - 1.2345665)
+1000000000.0000005
+>>> 1e9 + 1.2345670 - 1.2345665
+1000000000.0000006
+```
+
+One solution of this is to use the *compensated summation* algorithm. Your task is to implement this function
+for generic containers that hold double precision numbers (`vectors`, `array`, `list`).
+
+#### Algorithm
+
+The compensated summation algorithm, also called Kahan summation algorithm, involves a variable that accumulates
+small roundoff errors so that it can be added back. This effectively extends the precision of your calculation
+without requiring all math to be done in higher precision.
+
+The pseudocode for the algorithm is 
+
+```
+function CompensatedSum(input)
+    var sum = 0.0
+    var c = 0.0  // A running compensation variable
+
+    // The array input has elements indexed input[1] to input[input.length].
+    for i = 1 to input.length do
+        var y = input[i] - c
+        var t = sum + y  // may lose precision!
+
+        // (t - sum) cancels the high-order part of y;
+        // subtracting y recovers negative (low part of y)
+        c = (t - sum) - y
+
+        sum = t
+
+    // Next time around, the lost low part will be added to y in a fresh attempt.
+    next i
+
+    return sum
+```
+
+See [the wikipedia article](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) for more information.
+
+#### Your tasks
+
+**Note:** Write your code in the `csum` subdirectory
+
+Write a `compensated_sum` function.
+
+* Create a `main.cpp` file that only includes the `main()` function. This will be used for testing
+* You must implement the `compensated_sum` function in a separate file. Think about what type of file you want.
+* The function must be generic and able to work with containers of any type (that stores doubles)
+* Write some tests in the `main()` function. Include the one shown above, as well as an extreme variation
+   with 100,000 small numbers and one big number. Compare with a straightforward, non-compensated summation (ie, using the standard library).
+
+**Remember the general requirements above.**
+
+### Adjacency Matrices & Graph Walks
+
+As we've seen, cheminformatics borrows heavily from graph theory. The concepts of nodes, edges, and walks come
+from graph theory. Here is a water molecule with labeled atoms.
+
+![water](images/water.png)
+
+Given that atoms and bonds map to nodes (or vertices) and edges, respectively, we will define a *walk* as a sequence of nodes/atoms and edges/bonds where each consecutive nodes are adjacent (connected by an edge).
+For example, given a molecule of water labeled as above, `H1-O2` would be a walk of length 1, and `H1-O2-H3`
+would be a walk of length 2. The length of a walk is defined as the number of edges it touches.
+
+One interesting property to consider is the number of paths from one atom to another. You *could* do this by
+doing some graph searches, but there is a simpler way - via the *adjacency matrix*.
+
+The adjacency matrix $\mathbf{A}$ is a square, symmetric, $N \times N$ matrix (where $N$ is the number of atoms).
+The elements of the adjacency matrix are $1$ if the two atoms are connected by a bond, otherwise zero.
+The diagonal is zero. For example, the adjacency matrix for the water molecule above is
+
+$$
+\mathbf{A} = \begin{bmatrix}
+   0  &  1  &  0 \\
+   1  &  0  &  1 \\
+   0  &  1  &  0
+\end{bmatrix}
+$$
+
+where the first row and column refer to atom 1 (hydrogen on the left), etc. Note that this kind of adjacency matrix does not take bond order into account.
+
+An elegant property of the adjacency matrix is that elements of the $k$-th power of the matrix
+correspond to the number of walks between atoms - $[\mathbf{A}^k]_{ij}$ is the number
+of walks of length $k$ between elements $i$ and $j$.
+
+For our water example, 
+
+$$
+\mathbf{A}^2 = \begin{bmatrix}
+   1  &  0  &  1 \\
+   0  &  2  &  0 \\
+   1  &  0  &  1
+\end{bmatrix}
+$$
+
+That means there is one walk of length 2 from `H1` to itself, and two from `O2` to itself. There is one walk
+from `H1` to `H2` of length 2.
+
+Therefore, simply by taking powers of the adjacency matrix, we can determine the number of walks between atoms
+in a molecule.
+
+In addition there are other interesting properties that can be computed from the adjacency matrix. Namely, the
+*degree* of a node/vertex is the number of bonds it has. A vector that contains all the degrees of the molecule
+can then be computed. Think about how you can compute that from the adjacency matrix.
+
+For example, The degree of the oxygen atom in water is 2, while the degree of the hydrogens is 1 each.
+The degree vector would be `(1, 2, 1)` given the above ordering.
+
+
+#### Your tasks
+
+**Note:** Write your code in the `amat` subdirectory. 
+
+* Write a `Molecule` class. This will be a little different than what you have seen before. This
+  class will not take/store coordinates at all. It should be constructed from only a vector of symbols (strings) and a vector of `std::pair`. The pair will have two integers, corresponding to a pair of atoms that are bonded.
+* The class only constructor for the class is the one mentioned above
+* A method for obtaining the adjacency matrix is required
+* The class will be declared in a header file and defined in another source file.
+* There will be a `main.cpp` file that includes some tests.
+* The class will have a method `nwalks` that takes three parameters - the length, and then indices
+   of two atoms. This will compute the number of walks of the given length between the two atoms.
+* The class will have a method `degrees` which will return an Eigen vector of degrees for the whole
+   molecule.
+
+**Hints:** Using Eigen is encouraged. Think about the data type you are storing in the matrices/vectors.
+Consult the [Eigen documentation](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+if you are wondering about functionality.
+
+**Note:** The examples above used 1-based ordering. In code, use 0-based (ie, 0 would be the first hydrogen, 1 is the oxygen, 2, is the other hydrogen.)
+
+Do not include the whole Eigen source in your repo. Assume the person compiling your code has it
+installed.
+
+**Remember the general requirements above.**
 
 ## Python Final Project 
 
@@ -195,3 +314,8 @@ The following files are provided for this assignment:
 
 * `provided.py` - contains improved `parse_sdf` function from Problem Set 3.
 * `sdf.zip` - contains SDF files for molecules. You can try out your `Molecule` class on these files.
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });
+</script>
