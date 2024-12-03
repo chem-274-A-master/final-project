@@ -132,11 +132,13 @@ The elements of the adjacency matrix are $1$ if the two atoms are connected by a
 The diagonal is zero. For example, the adjacency matrix for the water molecule above is
 
 $$
-\mathbf{A} = \begin{bmatrix}
-   0  &  1  &  0 \\
-   1  &  0  &  1 \\
+\mathbf{A} = \left[
+\begin{matrix}
+   0  &  1  &  0 \newline
+   1  &  0  &  1 \newline
    0  &  1  &  0
-\end{bmatrix}
+\end{matrix}
+\right]
 $$
 
 where the first row and column refer to atom 1 (hydrogen on the left), etc. Note that this kind of adjacency matrix does not take bond order into account.
@@ -148,11 +150,13 @@ of walks of length $k$ between elements $i$ and $j$.
 For our water example, 
 
 $$
-\mathbf{A}^2 = \begin{bmatrix}
-   1  &  0  &  1 \\
-   0  &  2  &  0 \\
+\mathbf{A}^2 = \left[
+\begin{matrix}
+   1  &  0  &  1 \newline
+   0  &  2  &  0 \newline
    1  &  0  &  1
-\end{bmatrix}
+\end{matrix}
+\right]
 $$
 
 That means there is one walk of length 2 from `H1` to itself, and two from `O2` to itself. There is one walk
@@ -242,7 +246,7 @@ Create a `Molecule` class that can be used to represent a molecule.
 For this project, you may use functions, methods, and classes that are part of the  [NetworkX](https://networkx.org/) library.
 The functionality that you implement in this Project will be similar to the functionality that is provided by the [RDKit](https://www.rdkit.org/) library. If you were completing a project with molecules, it would be advisable to use this library instead of implementing your own functionality. However, for this Project, you *may not* use RDKit.
 
-The following are the requirements for your project. **When questions as "Why?" your answers should be grounded in the principles of Chem 274A (principles of object-oriented programming, data types, single responsibility principles, cheminformatics or molecular modeling concepts, etc.).**
+The following are the requirements for your project. **When questions ask "Why?" your answers should be grounded in the principles of Chem 274A (principles of object-oriented programming, data types, single responsibility principles, cheminformatics or molecular modeling concepts, etc.).**
 
 * The `Molecule` class should use a graph representation of the molecule. For this, consider how you may use composition or inheritance to create your class. 
 Be able to explain the choice you made in your project documentation.
