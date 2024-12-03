@@ -113,6 +113,8 @@ Write a `compensated_sum` function.
 
 ### Adjacency Matrices & Graph Walks
 
+**See also:** For much more information about graph theory in chemistry, see ["Handbook of Chemoinformatics Algorithms"](https://libproxy.berkeley.edu/login?qurl=https%3A%2F%2Fdoi.org%2F10.1201%2F9781420082999) (this is a Berkeley library link to the full texbook)
+
 As we've seen, cheminformatics borrows heavily from graph theory. The concepts of nodes, edges, and walks come
 from graph theory. Here is a water molecule with labeled atoms.
 
@@ -181,6 +183,8 @@ The degree vector would be `(1, 2, 1)` given the above ordering.
    of two atoms. This will compute the number of walks of the given length between the two atoms.
 * The class will have a method `degrees` which will return an Eigen vector of degrees for the whole
    molecule.
+* Write a `README.md` file containing a reflection of the choices you made designing your class. Include
+  decisions about `const`, passing and returning by reference or value, and how/when data is stored.
 
 **Hints:** Using Eigen is encouraged. Think about the data type you are storing in the matrices/vectors.
 Consult the [Eigen documentation](https://eigen.tuxfamily.org/index.php?title=Main_Page)
