@@ -8,14 +8,15 @@ This assignment is worth 20% of your final grade.
 
 ## C++ Final Project
 
-### General Requirements
+### C++ General Requirements
 
 These requirements apply to both C++ parts
 
 * Code must be split into the appropriate header and source files
+* Code should compile without warning on the default settings
 * A separate `main.cpp` file should contains tests of your functionality
 * `const` correctness is required!
-* Code should compile without warning on the default settings
+* Practice defensive programming (for example, bounds checking)
 
 ### Compenstated Summation
 
