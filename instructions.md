@@ -179,7 +179,7 @@ The degree vector would be `(1, 2, 1)` given the above ordering.
 
 * Write a `Molecule` class. This will be a little different than what you have seen before. This
   class will not take/store coordinates at all. It should be constructed from only a vector of symbols (strings) and a vector of `std::pair`. The pair will have two integers, corresponding to a pair of atoms that are bonded.
-* The class only constructor for the class is the one mentioned above
+* The only constructor for the class is the one mentioned above
 * A method for obtaining the adjacency matrix is required
 * The class will be declared in a header file and defined in another source file.
 * There will be a `main.cpp` file that includes some tests.
