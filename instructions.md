@@ -4,7 +4,17 @@ This assignment has a Python component and a C++ component.
 Each assignment combines concepts taught throughout the course.
 This assignment is worth 20% of your final grade.
 
-**Like the Problem Sets, your commits should show incremental development of your code.**
+<div style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 25px; border: 1px solid #ffeeba; border-radius: 4px;">
+  
+**Reminder: No AI Tools**
+
+According to MSSE Department policy, use of AI tools is not permitted in Chem 274A. Do not use generative AI tools (e.g., ChatGPT, Claude, GitHub Copilot, or similar) for any part of this assignment, including planning, coding, or writing.
+
+**Showing your work**
+
+Your final assignment should show incremental development with at least two different commits over two different days of work. Assignments that do not show incremental development will incur a 5% penalty.
+
+</div>
 
 ## C++ Final Project
 
@@ -118,7 +128,7 @@ Write a `compensated_sum` function.
 As we've seen, cheminformatics borrows heavily from graph theory. The concepts of nodes, edges, and walks come
 from graph theory. Here is a water molecule with labeled atoms.
 
-![water](images/water.png)
+![water](./images/water.png)
 
 Given that atoms and bonds map to nodes (or vertices) and edges, respectively, we will define a *walk* as a sequence of nodes/atoms and edges/bonds where each consecutive nodes are adjacent (connected by an edge).
 For example, given a molecule of water labeled as above, `H1-O2` would be a walk of length 1, and `H1-O2-H3`
@@ -203,126 +213,174 @@ installed.
 
 ## Python Final Project 
 
-As discussed in Problem Set 3, graphs are the basis of many type of digital representations of molecules. 
+In Problem Set 5 you built a `Residue` class and a small residue library based on idealized residue templates in CIF format. 
 
-In this project, you will use Python to create a graph representation of a molecule, creating a `Molecule` class.
-The `Molecule` class that you create can be screened for particular functional groups (a "substructure search").
+For the final project, you will use your residue class as a pieces for a **peptide builder** in Python. Your peptide builder will create and visualize a 3D linear chain of amino acids specified by sequence. Your goal will be to apply the programming and software engineering principles you learned in Chem 274A to this problem.
 
-A substructure search lets medicinal chemists find molecules that contain a particular functional group.
-In chemistry, a functional group is a group of atoms that have a particular chemical behavior.
-If you are unfamiliar with chemical functional groups, you can find a list of common functional groups [here](https://en.wikipedia.org/wiki/Functional_group).
+A peptide is a short chain of amino acids (a long chain is a protein). You can see a bit more [here](https://www.peptidesciences.com/peptide-information/peptides-vs-proteins/). You will write Python code to build a linear peptide chain for the final, though it is possible to extend this builder to other geometries. 
 
-When a substructure search is performed, a molecule is analyzed to determine if it contains a chemical pattern of interest.
-The figure below shows the beneze substructure matched in the aspirin molecule.
+<div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 25px; border: 1px solid #c3e6cb; border-radius: 4px;">
+  
+**Peptide and Polymer Structure**
 
-![substructure](images/substructure.png)
+For this assignment, you will be building linear peptide chains. 
+This is is a **very unrealistic conformation** for peptides. However, this kind of approximation is used for short peptides sometimes for input into molecular dynamics simulations.
 
-Substructure searches in molecules represented as graphs can be done by checking a molecular graph for a subgraph.
-Another faster but less exact method is to use molecular fingerprints.
+The shape and conformation of peptides and proteins is considered to be a "Scientific Grand Challenge", which dramatically advanced by Google DeepMind's 2020 model AlphaFold.
 
-The concept of molecular fingerprints was covered in [Lab 5](https://github.com/chem-274-A-master/lab-5).
-Briefly, a molecular fingerprint is a vector of bits that represent the presence or absence of particular features in a molecule.
-Although there are many different types of molecular fingerprints, graph representation of molecules form the foundation of most algorithms.
-For this assignment, you will implement a molecular fingerprint based on graph traversal.
+If you are interested in real 3D structure of proteins and peptides, you should check out things like the [Protein Data Bank](https://www.rcsb.org/), [AlphaFold](https://alphafoldserver.com/) (from Google), or [ESMFold](https://esmatlas.com/resources?action=fold) (from Meta)
 
-Consider the figure below. 
-Based on molecular graph traversal, a benzene ring might result in the highlighted bits being set.
-Any molecule that contains the same pattern will also have the same bits set.
-Recall from Lab 7 that unlike a human fingerprint, molecular fingerprints are not necessarily unique to a molecule.
-Note that because of this, the fingerprint of substructure search is less exact that subgraph searching because patterns other than benzene might result in the same bits being set.
-
-![fingerprints](images/fingerprint_substructure.png)
+</div>
 
 
-### Required Features
+## Background: Peptide Chains & Atom Naming Conventions
 
-For this final project, detailed specifications and a rubric are not provided.
-You will need to use what you have learned about classes in the Python programming language.
-For this final assignment, you should create a full project. 
-This includes not only code, but a user interface (command line), documentation, and testing.
-**Consider how you can use concepts like inheritance, operator overloading, and special Python methods in your project.**
+To create a peptide chain, you will have to load residue templates, translate them in space, remove atoms, and create bonds between residues. A peptide chain forms when amino‑acid residues join through peptide bonds, created via a dehydration reaction:
 
-Create a `Molecule` class that can be used to represent a molecule.
-For this project, you may use functions, methods, and classes that are part of the  [NetworkX](https://networkx.org/) library.
-The functionality that you implement in this Project will be similar to the functionality that is provided by the [RDKit](https://www.rdkit.org/) library. If you were completing a project with molecules, it would be advisable to use this library instead of implementing your own functionality. However, for this Project, you *may not* use RDKit.
+![images/peptide-bond.jpeg](./images/peptide-bond.jpeg)
 
-The following are the requirements for your project. **When questions ask "Why?" your answers should be grounded in the principles of Chem 274A (principles of object-oriented programming, data types, single responsibility principles, cheminformatics or molecular modeling concepts, etc.).**
+**Image from [Introduction to Molecular Biology, Chapter 3. Amino Acids and Proteins; e-textbook, Roger Williams University](https://rwu.pressbooks.pub/bio103/chapter/amino-acids-and-proteins/)**
 
-* The `Molecule` class should use a graph representation of the molecule. For this, consider how you may use composition or inheritance to create your class. 
-Be able to explain the choice you made in your project documentation.
-* Your `Molecule` class should have multiple methods that can be used for construction. It should be able to be constructed either from a list of atoms and bonds or from an SDF file ("or" here is referred to the user choice, the class should contain both methods of construction). For this requirement, consider ways we learned to write constructors in Python.
-* Your `Molecule` class should have a method or attribute that represents the molecular fingerprint of the molecule (more information below). When designing your fingerprint, consider the following - how will you handle atoms and bonds in your fingerprint? For example, how can you make sure a hydroxyl (COH) group is recognized differently than a carbonyl (C=O) group? You should explain each choice you make for your fingerprint in your project documentation.
-* Your Molecule class should include a method to detect aromatic rings using [Hückel's rule](https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Supplemental_Modules_(Organic_Chemistry)/Arenes/Properties_of_Arenes/Aromaticity/Huckel's_Rule). You may assume all rings are planar.
-Consider only rings containing C, N, O, and S atoms. Your class should store this information in a way that ensures your fingerprint recognizes equivalent resonance structures(for example, pyridine as C1=CC=NC=C1  or C1C=CC=NC=1). Consider how this information can be represented in your graph and how it affects your path generation for fingerprints. You should explain your approach to aromaticity detection and representation in your project documentation.
-* Your `Molecule` class should be comparable to other `Molecule` objects through the equality operator (`==`). You may or may not choose to use a fingerprint for this task. You must explain your choice for the equality operator in your documentation.
-* Your `Molecule` class should have a visual representation (use CPK coloring). You may use a method for this, or you may use a special Python method. 
-For example, you may write your class such that if a `Molecule` instance is the last thing in a Jupyter notebook cell, you see an image of the molecule by writing a `_ipython_display_` method for your class.
-* A user should be able to import your `Molecule` object and use it in a script or notebook.
-* A user should be able to perform a substructure screen using a function or method and **from the command line**. For your command line interface you should consider using `sys.argv` or `argparse`. Explain your choice in  your project documentation.
-* Your project should include testing of your code using pytest. You should have at least one test for each method in your `Molecule` class to ensure that your code runs. More extensive testing is encouraged.
-* Your project should include a Makefile that can be used to run your tests and build an environment.
-* In your README, fully explain your code and repository. Be sure to include information on your design approach for your `Molecule` object. What principles from Chem 274A did you apply? You should discuss at least one other approach for creating the `Molecule` class that you did not use, and explain why you chose the approach that you did. What method did you use for substructure search and why? What would be an alternative method? What are the advantages and disadvantages of each method?
+This means a new bond is made between the **C** atom of residue *i* and the **N** atom of residue *i+1*, and specific atoms are removed (the “leaving group”). When you specify an amino acid sequence, it has directionality. The sequence `AVC` has `A` at the N-terminus and `C` at the C terminus. This is a different peptide than `CVA`.
 
-For your fingerprint, you will have to choose parameters such as number of bits and path length.
-As a reference, RDKit uses the following defaults for fingerprints:
+![images/nterminal1.png](./images/nterminal1.png)
 
-* minimum path size: 1 bond
-* maximum path size: 7 bonds
-* fingerprint size: 2048 bits
-* number of bits set per hash: 2
+**Image from [Chemitry LibreTexts](https://chem.libretexts.org/Ancillary_Materials/Reference/Organic_Chemistry_Glossary/N-Terminal)**
 
-### How to Construct a Molecular Fingerprint
+[Our residue templates follow conventions set by the World Wide PDB](https://www.wwpdb.org/documentation/peptides-remediation) (the ideal coordinates came from the PDB, actually!) The image below highlights the parts of the amino acids, along with the atoms that are leaving groups in peptide bond formation. These names match the names that are in your CIFs.
 
-To construct a molecular fingerprint, you first have to construct paths from the molecule graph.
-Consider the example below.
+![images](./images/SER_BBaT_2D_with_atom_names.png)
 
-The following example is taken from [the Daylight website](http://www.daylight.com/dayhtml/doc/theory/theory.finger.html).
+* **N‑terminal side (blue)**
 
-The molecule OC=CN would generate the following patterns:
+  * Linked amino nitrogen is always named **N**.
+  * Hydrogens are named:
+    * One hydrogen: **H**
+    * Two hydrogens: **H**, **H2** (H2 is the leaving atom)
+    * Three hydrogens: **H**, **H2**, **H3** (H2 & H3 are leaving atoms)
 
-0-bond paths:	  C	  O	  N  
-1-bond paths:	  OC	  C=C	  CN  
-2-bond paths:	  OC=C	  C=CN  
-3-bond paths:	  OC=CN	  
+* **Backbone alpha carbon (yellow)**
+  * The carbon bonded to both the amino group and the side chain is named **CA**.
 
-The list of patterns produced is exhaustive: Every pattern in the molecule, up to the pathlength limit, is generated. For all practical purposes, the number of patterns one might encounter by this exhaustive search is infinite, but the number produced for any particular molecule can be easily handled by a computer.
+* **C‑terminal side (red)**
+  * Carboxyl carbon is always **C**.
+    * **OXT** and **HXT** are leaving atoms during peptide‑bond formation.
 
-Each pattern serves as a seed to a pseudo-random number generator (it is "hashed"), the output of which is a set of bits (typically 4 or 5 bits per pattern); the set of bits thus produced is then added to the fingerprint. 
+---
+<div style="background-color: #d1ecf1; color: #0c5460; padding: 15px; margin-bottom: 25px; border: 1px solid #bee5eb; border-radius: 4px;">
 
-### Pseudocode for Molecular Fingerprint
+**A Note on Look-Ups**
 
-Pseudocode, taken from ["Handbook of Chemoinformatics Algorithms"](https://libproxy.berkeley.edu/login?qurl=https%3A%2F%2Fdoi.org%2F10.1201%2F9781420082999) (this is a Berkeley library link to the full texbook), for generating a molecular fingerprint is given below. 
-Remember that you can utilized functionality in `NetworkX` to implement
-the fingerprint. 
+Once you start building peptide chains, you repeatedly need to answer questions like:
 
-This pseudocode should provide you with a starting point, but your implementation or loop structure may differ depending on your choice in implementation.
+* "Where is the N atom of this residue?"
+* "Connect the C of residue *i* to the N of residue *i+1*."
 
-```
-method getHashedPathFingerprint(Molecule G, Size
-d, Pathlength l)
-{
-    fingerprint = initializeBitvector(d)
-    paths = getPaths(G,l)
-    for all atoms in G do
-        for all paths starting at atom do
-            seed = hash(path) //generate an integer hash value
-            randomIntSet=randomInt(seed) //generate a set of random integers
-            for all rInts in randomIntSet do
-                index = rInt % d //map the random int to a bit position
-                fingerprint[index]=TRUE
-            od
-        od
-od
-return fingerprint
-}
-```
+If you store atoms in a simple list and search by looping, every lookup is **O(N)** in the number of atoms. For small examples this is fine, but it does not scale well and makes your code harder to reason about.
 
-### Provided Files
+A common alternative is to:
 
-The following files are provided for this assignment: 
+* Store **coordinates** in a single `numpy.ndarray` of shape `(N, 3)` so that you can translate an entire residue with code like `coords += vector`.
+* Store **atom names** in a separate list.
+* Maintain a small **index map**: a dictionary from `atom_name -> row_index`, so lookups like `"CA"` → index are effectively **O(1)**.
 
-* `provided.py` - contains improved `parse_sdf` function from Problem Set 3.
-* `sdf.zip` - contains SDF files for molecules. You can try out your `Molecule` class on these files.
+You are not required to implement this exact layout, but you should think about this “lookup problem” and choose data structures that make your life easier.
+</div>
+
+### Requirements
+
+For your peptide builder, you should consider how to demonstrate principles you have learned in Chem 274A. Some of the requirements listed below have questions that should be addressed in your project documentation. **No rubric** is provided in advance for the final.
+
+You will build on your PS5 Residue class and create a new Peptide class, along with any helper functions you need. You may edit the internals of your Residue class (how information is stored), but you should maintain the same interface as outlined in PS5. You can add additional methods to your class, but you should not modify or remove the behavior of existing methods. In software development, this is called keeping backwards compatbility.
+
+Your project must include the following:
+
+**Residue Class (building on PS5)**
+
+* A Residue class that continues the interface introduced in PS5.
+
+* The `create_residue` factory function from PS5 that loads a residue from your data directory.
+
+* A mechanism to set coordinates of all atoms in the residue at once. This mechanism should validate the coordinates shape.
+
+* A working `remove_atom(name)` method that removes an atom from the residue. This method should ensure that the internal representation of the residue is consistent.
+
+* A mechanism to compute the backbone N→C vector for a residue.
+
+* At least one custom exception for error handling
+
+* Testing using `pytest` for your `Residue` class. You should start with the tests from Problem Set 5 and add new tests for new functionality of your class.
+
+**Peptide Class**
+
+Your Peptide class should:
+
+* Be constructible from a one‑letter amino‑acid sequence (e.g., "AGDV").
+
+* Internally convert one‑letter codes to three‑letter codes, loading residue templates with `from_cif` or `create_residue`.
+
+* Have a one letter sequence representation, and a three letter sequence representation (i.e. - `Ala-Gly-Val`)
+
+* Give each residue in the peptide chain a unique name.
+
+* Allow the user to access a residue using slicing (`[]`)
+
+* Place residues along an extended chain. You can do this by translating coordinates along each backbone vector + an additional vector representing the bond length. The bond length for an amide bond is 1.33 angstrom.
+
+* Your peptide class should connect the residues in the chain using amide bonds. This means you will need to remove leaving atoms from your residues and add bonds between residues.
+
+* You should have a `bonds` attribute or property that gives a list of bonds for the full peptide. The format of this list should be `[(resname1, atom1), (resname2, atom2), weight]`
+
+* Testing for your `Peptide` class using `pytest`
+
+**Visualization**
+
+* Your project must include 3D visualization capability using matplotlib. Use matplotlib 3D plotting to draw atoms as scatter points in 3D and bonds as lines between your atoms. Your atoms should be colored using CPK coloring and large enough to see when plotted. Your function or method should be able to both show the plot or optionally save to a file.
+
+**Magic Methods (Choose at Least Two)**
+
+Implement at least two of the following magic methods in Residue and/or Peptide (in addition to the required one listed above):
+
+* `__repr__` or `__str__`
+
+* `__len__`
+
+* `__getitem__`
+
+* `__iter__`
+
+* `__contains__`
+
+**Demo Script**  
+ Create `demo.py` that demonstrates your Python API by:
+   1. Building a peptide from sequence
+   2. Accessing individual residues
+   3. Getting atom information
+   4. Visualizing the result
+Include comments explaining each step.
+
+
+**Makefile**
+
+Include a `Makefile` with an `environment` target and a target called `visualize` to visualize `GIGAVLKVLTTGLPALISWIKRKRQQ` (A Python CLI might be useful here!). Have the target save to file `melittin.png`. For fun, you can see the real structure on [Wikipedia](https://en.wikipedia.org/wiki/Melittin) or through [ESMFold](https://esmatlas.com/resources/fold/result?fasta_header=&sequence=GIGAVLKVLTTGLPALISWIKRKRQQ). Note how different the real peptide structure is from your idealized linear chain!
+
+**Optional Extra Credit (5/100 points max)**  
+Profile your peptide builder using methods from Problem Set 4 on a large peptide. In your README discussion include a profiling visualization and discuss any bottlenecks present in your code and how you might address them. Clearly label your discussion as **EXTRA CREDIT** under your discussion questions.
+
+
+### Documentation and Reflection
+
+Include a `README` with an overview of your project including how to install and run your code and use your `Makefile`.
+
+Also include answers to the following questions:
+
+1. Describe how you ensured that all related internal data structures for your `Residue` and `Peptide` classes stayed consistent as your objects changed (for example, atom lists, coordinate arrays, bond lists, and lookup maps). What Python language features, if any, did you use to help with this?
+
+2. Discuss how (or whether) your project uses composition, encapsulation, and inheritance. Give at least one concrete example for each used, and briefly explain why this design is or is not appropriate for your peptide builder. 
+
+3. Explain how you chose and managed the data types used in your project (lists, dicts, NumPy arrays, custom objects). Why were these choices appropriate, and how did they help you ensure correctness, avoid errors, or simplify specific operations?
+
+4. Which magic methods did you choose to implement and why? How do these help with class design, consistency, or user interface?
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config">
