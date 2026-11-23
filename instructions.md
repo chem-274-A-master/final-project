@@ -4,7 +4,7 @@ This assignment has a Python component and a C++ component.
 Each assignment combines concepts taught throughout the course.
 This assignment is worth 20% of your final grade.
 
-<div style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 25px; border: 1px solid #ffeeba; border-radius: 4px;">
+<div class="callout callout-warning">
   
 **Reminder: No AI Tools**
 
@@ -215,16 +215,16 @@ installed.
 
 In Problem Set 5 you built a `Residue` class and a small residue library based on idealized residue templates in CIF format. 
 
-For the final project, you will use your residue class as a pieces for a **peptide builder** in Python. Your peptide builder will create and visualize a 3D linear chain of amino acids specified by sequence. Your goal will be to apply the programming and software engineering principles you learned in Chem 274A to this problem.
+For the final project, you will use your residue class as pieces for a **peptide builder** in Python. Your peptide builder will create and visualize a 3D linear chain of amino acids specified by sequence. Your goal will be to apply the programming and software engineering principles you learned in Chem 274A to this problem.
 
-A peptide is a short chain of amino acids (a long chain is a protein). You can see a bit more [here](https://www.peptidesciences.com/peptide-information/peptides-vs-proteins/). You will write Python code to build a linear peptide chain for the final, though it is possible to extend this builder to other geometries. 
+A peptide is a short chain of amino acids (a long chain is a protein). You can see a bit more [here](https://www.genome.gov/genetics-glossary/Peptide). You will write Python code to build a linear peptide chain for the final, though it is possible to extend this builder to other geometries.
 
-<div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 25px; border: 1px solid #c3e6cb; border-radius: 4px;">
+<div class="callout callout-success">
   
 **Peptide and Polymer Structure**
 
 For this assignment, you will be building linear peptide chains. 
-This is is a **very unrealistic conformation** for peptides. However, this kind of approximation is used for short peptides sometimes for input into molecular dynamics simulations.
+This is a **very unrealistic conformation** for peptides. However, this kind of approximation is used for short peptides sometimes for input into molecular dynamics simulations.
 
 The shape and conformation of peptides and proteins is considered to be a "Scientific Grand Challenge", which dramatically advanced by Google DeepMind's 2020 model AlphaFold.
 
@@ -266,8 +266,10 @@ This means a new bond is made between the **C** atom of residue *i* and the **N*
   * Carboxyl carbon is always **C**.
     * **OXT** and **HXT** are leaving atoms during peptide‑bond formation.
 
+The CIF templates identify leaving atoms in the `_chem_comp_atom.pdbx_leaving_atom_flag` field (`Y` indicates a leaving atom). Use this information, together with the template's bonds, to determine which atoms to remove at each peptide connection rather than relying only on a fixed list of atom names. For each connection, remove the C-terminal leaving atoms from residue *i* and the N-terminal leaving atoms from residue *i+1*. Retain the leaving atoms at the two unlinked ends of the peptide. Note that proline's N-terminal leaving hydrogen is named **H**, rather than **H2**.
+
 ---
-<div style="background-color: #d1ecf1; color: #0c5460; padding: 15px; margin-bottom: 25px; border: 1px solid #bee5eb; border-radius: 4px;">
+<div class="callout callout-note">
 
 **A Note on Look-Ups**
 
@@ -291,7 +293,7 @@ You are not required to implement this exact layout, but you should think about 
 
 For your peptide builder, you should consider how to demonstrate principles you have learned in Chem 274A. Some of the requirements listed below have questions that should be addressed in your project documentation. **No rubric** is provided in advance for the final.
 
-You will build on your PS5 Residue class and create a new Peptide class, along with any helper functions you need. You may edit the internals of your Residue class (how information is stored), but you should maintain the same interface as outlined in PS5. You can add additional methods to your class, but you should not modify or remove the behavior of existing methods. In software development, this is called keeping backwards compatbility.
+You will build on your PS5 Residue class and create a new Peptide class, along with any helper functions you need. You may edit the internals of your Residue class (how information is stored), but you should maintain the same interface as outlined in PS5. You can add additional methods to your class, but you should not modify or remove the behavior of existing methods. In software development, this is called keeping backwards compatibility.
 
 Your project must include the following:
 
@@ -329,7 +331,7 @@ Your Peptide class should:
 
 * Your peptide class should connect the residues in the chain using amide bonds. This means you will need to remove leaving atoms from your residues and add bonds between residues.
 
-* You should have a `bonds` attribute or property that gives a list of bonds for the full peptide. The format of this list should be `[(resname1, atom1), (resname2, atom2), weight]`
+* You should have a `bonds` attribute or property that gives a list of bonds for the full peptide. Each bond in this list should have the format `[(resname1, atom1), (resname2, atom2), weight]`, where `weight` is the bond order.
 
 * Testing for your `Peptide` class using `pytest`
 
@@ -344,8 +346,6 @@ Implement at least two of the following magic methods in Residue and/or Peptide 
 * `__repr__` or `__str__`
 
 * `__len__`
-
-* `__getitem__`
 
 * `__iter__`
 
