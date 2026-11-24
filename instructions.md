@@ -325,7 +325,7 @@ Your Peptide class should:
 
 * Give each residue in the peptide chain a unique name.
 
-* Allow the user to access a residue using slicing (`[]`)
+* Allow the user to access residues using slicing and indexing (`[]`)
 
 * Place residues along an extended chain. You can do this by translating coordinates along each backbone vector + an additional vector representing the bond length. The bond length for an amide bond is 1.33 angstrom.
 
