@@ -28,7 +28,7 @@ These requirements apply to both C++ parts
 * `const` correctness is required!
 * Practice defensive programming (for example, bounds checking)
 
-### Compenstated Summation
+### Compensated Summation
 
 The finite precision of most programming languages can result in loss of precision in mathematical expressions and rounding error
 when accumulating large numbers of values, or in particular, numbers of very different magnitudes.
